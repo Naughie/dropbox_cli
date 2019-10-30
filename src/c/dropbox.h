@@ -34,6 +34,8 @@ namespace dropbox {
   int download(const char*);
   int upload(const char*, const char*);
   int delete_v2(const char*);
+  int move_v2(const char*, const char*);
+  // int move_batch_v2(const char**, int, const char*);
 
   void usage(const char*);
 }
@@ -184,6 +186,64 @@ int dropbox::delete_v2(const char *path) {
 
   return dropbox::perform(url, &headers, post_body, cout, dropbox::callback);
 }
+
+int dropbox::move_v2(const char *from_path, const char *to_path) {
+  string url(dropbox::RPC_URL);
+  url += dropbox::API_PREFIX;
+  url += "/files/move_v2";
+
+  string post_body("{\"from_path\": \"/");
+  post_body += from_path;
+  post_body += "\",\"to_path\": \"/";
+  post_body += to_path;
+  post_body += "\",\"allow_shared_folder\": true,\"autorename\": false,\"allow_ownership_transfer\": false}";
+
+  dropbox::HEADERS headers;
+
+  string content_type(dropbox::CONTENT_TYPE);
+  content_type += dropbox::JSON;
+  headers.push_back(content_type);
+
+  return dropbox::perform(url, &headers, post_body, cout, dropbox::callback);
+}
+
+/*
+int dropbox::move_batch_v2(const char **from_paths, int n_paths, const char *to_path) {
+  if (!n_paths) {
+    return 1;
+  }
+
+  string url(dropbox::RPC_URL);
+  url += dropbox::API_PREFIX;
+  url += "/files/move_v2";
+
+  string post_body("{\"entries\": [");
+
+  const char **from_path = from_paths;
+  while (from_path < from_paths + n_paths - 1) {
+    post_body += "{\"from_path\": \"/";
+    post_body += *from_path++;
+    post_body += "\",\"to_path\": \"/";
+    post_body += to_path;
+    post_body += "\"},";
+  }
+  post_body += "{\"from_path\": \"/";
+  post_body += *from_path;
+  post_body += "\",\"to_path\": \"/";
+  post_body += to_path;
+  post_body += "\"}";
+
+  post_body += "],\"autorename\": false,\"allow_ownership_transfer\": false}";
+
+  dropbox::HEADERS headers;
+
+  string content_type(dropbox::CONTENT_TYPE);
+  content_type += dropbox::JSON;
+  headers.push_back(content_type);
+
+  return dropbox::perform(url, &headers, post_body, cout, dropbox::callback);
+}
+*/
 
 void dropbox::usage(const char *cmd) {
   cout << "Usage: " << endl;
