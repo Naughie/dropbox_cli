@@ -1,3 +1,6 @@
+#ifndef DROPBOX_CLI_H
+#define DROPBOX_CLI_H
+
 #include <iostream>
 #include <vector>
 #include <string>
@@ -15,6 +18,8 @@ namespace dropbox {
   static const char RPC_URL[]     = "https://api.dropboxapi.com";
   static const char CONTENT_URL[] = "https://content.dropboxapi.com";
   static const char API_PREFIX[]  = "/2";
+
+  static const char FILES_PREFIX[] = "/files";
 
   static const char AUTHORIZATION[]   = "Authorization: ";
   static const char CONTENT_TYPE[]    = "Content-Type: ";
@@ -124,7 +129,8 @@ int dropbox::download(const char *fname) {
 
   string url(dropbox::CONTENT_URL);
   url += dropbox::API_PREFIX;
-  url += "/files/download";
+  url += dropbox::FILES_PREFIX;
+  url += "/download";
 
   string post_body;
 
@@ -146,7 +152,8 @@ int dropbox::download(const char *fname) {
 int dropbox::upload(const char *fname, const char *dir) {
   string url(dropbox::CONTENT_URL);
   url += dropbox::API_PREFIX;
-  url += "/files/upload";
+  url += dropbox::FILES_PREFIX;
+  url += "/upload";
 
   ifstream ifs(fname);
   string post_body(istreambuf_iterator<char>(ifs), {});
@@ -173,7 +180,8 @@ int dropbox::upload(const char *fname, const char *dir) {
 int dropbox::delete_v2(const char *path) {
   string url(dropbox::RPC_URL);
   url += dropbox::API_PREFIX;
-  url += "/files/delete_v2";
+  url += dropbox::FILES_PREFIX;
+  url += "/delete_v2";
 
   string post_body("{\"path\": \"/");
   post_body += path;
@@ -191,7 +199,8 @@ int dropbox::delete_v2(const char *path) {
 int dropbox::move_v2(const char *from_path, const char *to_path) {
   string url(dropbox::RPC_URL);
   url += dropbox::API_PREFIX;
-  url += "/files/move_v2";
+  url += dropbox::FILES_PREFIX;
+  url += "/move_v2";
 
   string post_body("{\"from_path\": \"/");
   post_body += from_path;
@@ -249,7 +258,8 @@ int dropbox::move_batch_v2(const char **from_paths, int n_paths, const char *to_
 int dropbox::create_folder_v2(const char *dir) {
   string url(dropbox::RPC_URL);
   url += dropbox::API_PREFIX;
-  url += "/files/create_folder_v2";
+  url += dropbox::FILES_PREFIX;
+  url += "/create_folder_v2";
 
   string post_body("{\"path\": \"/");
   post_body += dir;
@@ -277,3 +287,5 @@ void dropbox::usage(const char *cmd) {
   cout << "      tries to upload foo.pdf to /Bar." << endl;
   cout << endl;
 }
+
+#endif
