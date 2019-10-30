@@ -36,6 +36,7 @@ namespace dropbox {
   int delete_v2(const char*);
   int move_v2(const char*, const char*);
   // int move_batch_v2(const char**, int, const char*);
+  int create_folder_v2(const char*);
 
   void usage(const char*);
 }
@@ -244,6 +245,24 @@ int dropbox::move_batch_v2(const char **from_paths, int n_paths, const char *to_
   return dropbox::perform(url, &headers, post_body, cout, dropbox::callback);
 }
 */
+
+int dropbox::create_folder_v2(const char *dir) {
+  string url(dropbox::RPC_URL);
+  url += dropbox::API_PREFIX;
+  url += "/files/create_folder_v2";
+
+  string post_body("{\"path\": \"/");
+  post_body += dir;
+  post_body += "\",\"autorename\": false}";
+
+  dropbox::HEADERS headers;
+
+  string content_type(dropbox::CONTENT_TYPE);
+  content_type += dropbox::JSON;
+  headers.push_back(content_type);
+
+  return dropbox::perform(url, &headers, post_body, cout, dropbox::callback);
+}
 
 void dropbox::usage(const char *cmd) {
   cout << "Usage: " << endl;
