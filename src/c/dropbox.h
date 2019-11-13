@@ -281,6 +281,7 @@ void dropbox::usage(const char *cmd) {
   cout << "  " << cmd << " [u|upload|-u|--upload] <path1>                download a file <path> to the root folder." << endl;
   cout << "  " << cmd << " [r|remove|-r|--remove] <path>                 remove a file <path>." << endl;
   cout << "  " << cmd << " [h|help|-h|--help]                            print this help." << endl;
+  cout << "  " << cmd << " [f|mkdir|-f|--mkdir] <path>                   create a directory <path>." << endl;
   cout << endl;
   cout << "Note: <path> does *not* include the root \"/\". For example," << endl;
   cout << "        " << cmd << " upload foo.pdf Bar" << endl;
