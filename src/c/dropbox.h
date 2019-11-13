@@ -44,6 +44,8 @@ namespace dropbox {
   int create_folder_v2(const char*);
 
   void usage(const char*);
+  int openfailed(ifstream&, const char*);
+  int openfailed(ofstream&, const char*);
 }
 
 size_t dropbox::default_callback(char *ptr, size_t size, size_t nmemb, void *stream) {
@@ -126,6 +128,7 @@ int dropbox::perform(string &url, dropbox::HEADERS *headers, string &post_body, 
 int dropbox::download(const char *fname) {
   const char *basefname = basename((char *)fname);
   ofstream ofs(basefname);
+  if (openfailed(ofs, basefname)) return 1;
 
   string url(dropbox::CONTENT_URL);
   url += dropbox::API_PREFIX;
@@ -156,6 +159,7 @@ int dropbox::upload(const char *fname, const char *dir) {
   url += "/upload";
 
   ifstream ifs(fname);
+  if (openfailed(ifs, fname)) return 1;
   string post_body(istreambuf_iterator<char>(ifs), {});
 
   dropbox::HEADERS headers;
@@ -287,6 +291,22 @@ void dropbox::usage(const char *cmd) {
   cout << "        " << cmd << " upload foo.pdf Bar" << endl;
   cout << "      tries to upload foo.pdf to /Bar." << endl;
   cout << endl;
+}
+
+int dropbox::openfailed(ifstream &ifs, const char *fname) {
+  if (!ifs) {
+    cerr << "Could not open " << fname << "." << endl;
+    return 1;
+  }
+  return 0;
+}
+
+int dropbox::openfailed(ofstream &ofs, const char *fname) {
+  if (!ofs) {
+    cerr << "Could not open " << fname << "." << endl;
+    return 1;
+  }
+  return 0;
 }
 
 #endif
