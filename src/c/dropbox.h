@@ -32,7 +32,7 @@ namespace dropbox {
   using CALLBACK = size_t (*)(char*, size_t, size_t, void*);
   using HEADERS = vector<string>;
 
-  size_t callback(char*, size_t, size_t, void*);
+  size_t default_callback(char*, size_t, size_t, void*);
 
   int perform(string&, HEADERS*, string&, ostream&, CALLBACK);
 
@@ -46,7 +46,7 @@ namespace dropbox {
   void usage(const char*);
 }
 
-size_t dropbox::callback(char *ptr, size_t size, size_t nmemb, void *stream) {
+size_t dropbox::default_callback(char *ptr, size_t size, size_t nmemb, void *stream) {
   size_t block = size * nmemb;
   vector<char> *buf = (vector<char>*)stream;
   for (char *p = ptr; p < ptr + block; buf->push_back(*(p++))) {}
@@ -69,7 +69,7 @@ int dropbox::perform(string &url, dropbox::HEADERS *headers, string &post_body, 
 
   curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 1);
 
-  curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, dropbox::callback);
+  curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, callback);
 
   curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buf);
 
@@ -146,7 +146,7 @@ int dropbox::download(const char *fname) {
   content_type += dropbox::TEXT_PLAIN;
   headers.push_back(content_type);
 
-  return dropbox::perform(url, &headers, post_body, ofs, dropbox::callback);
+  return dropbox::perform(url, &headers, post_body, ofs, dropbox::default_callback);
 }
 
 int dropbox::upload(const char *fname, const char *dir) {
@@ -174,7 +174,7 @@ int dropbox::upload(const char *fname, const char *dir) {
   content_type += dropbox::OCTET_STREAM;
   headers.push_back(content_type);
 
-  return dropbox::perform(url, &headers, post_body, cout, dropbox::callback);
+  return dropbox::perform(url, &headers, post_body, cout, dropbox::default_callback);
 }
 
 int dropbox::delete_v2(const char *path) {
@@ -193,7 +193,7 @@ int dropbox::delete_v2(const char *path) {
   content_type += dropbox::JSON;
   headers.push_back(content_type);
 
-  return dropbox::perform(url, &headers, post_body, cout, dropbox::callback);
+  return dropbox::perform(url, &headers, post_body, cout, dropbox::default_callback);
 }
 
 int dropbox::move_v2(const char *from_path, const char *to_path) {
@@ -214,7 +214,7 @@ int dropbox::move_v2(const char *from_path, const char *to_path) {
   content_type += dropbox::JSON;
   headers.push_back(content_type);
 
-  return dropbox::perform(url, &headers, post_body, cout, dropbox::callback);
+  return dropbox::perform(url, &headers, post_body, cout, dropbox::default_callback);
 }
 
 /*
@@ -251,7 +251,7 @@ int dropbox::move_batch_v2(const char **from_paths, int n_paths, const char *to_
   content_type += dropbox::JSON;
   headers.push_back(content_type);
 
-  return dropbox::perform(url, &headers, post_body, cout, dropbox::callback);
+  return dropbox::perform(url, &headers, post_body, cout, dropbox::default_callback);
 }
 */
 
@@ -271,7 +271,7 @@ int dropbox::create_folder_v2(const char *dir) {
   content_type += dropbox::JSON;
   headers.push_back(content_type);
 
-  return dropbox::perform(url, &headers, post_body, cout, dropbox::callback);
+  return dropbox::perform(url, &headers, post_body, cout, dropbox::default_callback);
 }
 
 void dropbox::usage(const char *cmd) {
