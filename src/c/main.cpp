@@ -26,11 +26,13 @@ int main(int argc, char const* argv[])
         return 1;
       }
     } else if (strcmp(argv[1], "r") == 0 || strcmp(argv[1], "remove") == 0 || strcmp(argv[1], "-r") == 0 || strcmp(argv[1], "--remove") == 0) {
-      if (argc != 3) {
+      if (argc < 3) {
         dropbox::usage(argv[0]);
         return 1;
       }
-      r = dropbox::delete_v2(argv[2]);
+      for (int i = 2; i < argc - 1; ++i) {
+        r = dropbox::delete_v2(argv[i]);
+      }
     } else if (strcmp(argv[1], "m") == 0 || strcmp(argv[1], "move") == 0 || strcmp(argv[1], "-m") == 0 || strcmp(argv[1], "--move") == 0) {
       if (argc < 4) {
         dropbox::usage(argv[0]);
