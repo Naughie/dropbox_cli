@@ -30,7 +30,7 @@ int main(int argc, char const* argv[])
         dropbox::usage(argv[0]);
         return 1;
       }
-      for (int i = 2; i < argc - 1; ++i) {
+      for (int i = 2; i < argc; ++i) {
         r = dropbox::delete_v2(argv[i]);
       }
     } else if (strcmp(argv[1], "m") == 0 || strcmp(argv[1], "move") == 0 || strcmp(argv[1], "-m") == 0 || strcmp(argv[1], "--move") == 0) {
